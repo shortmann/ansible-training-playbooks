@@ -1,0 +1,4 @@
+---
+- name: create students vms
+  roles:
+    role: ansible-digitalocean-students
