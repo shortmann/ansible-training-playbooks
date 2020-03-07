@@ -1,0 +1,33 @@
+- name: get tower hosts
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: install dependencies
+      pip:
+        name: ansible-tower-cli
+
+    - name: get data
+      tower_receive:
+        inventory:
+         - all
+      register: tower_data
+
+    - name: debug
+      loop: "{{ tower_data.assets[0].asset_relation.group }}"
+      when: "'digital_ocean' in item.name"
+      debug:
+        msg: "{{ item.hosts}}"
+
+    - name: set hosts to remove
+      loop: "{{ tower_data.assets[0].asset_relation.group }}"
+      when: "'digital_ocean' in item.name"
+      set_fact:
+        hosts_to_remove: "{{ item.hosts}}"
+
+    - name: remove hosts from inventory
+      loop: "{{ hosts_to_remove }}"
+      tower_host:
+        name: "{{ item }}"
+        inventory: "Digital Ocean Inventory"
+        state: absent
+

@@ -1,6 +1,9 @@
 - name: get tower hosts
   hosts: localhost
   connection: local
+  vars:
+    students_count: 7
+    students_vm_count: 3
   tasks:
     - name: install dependencies
       pip:
@@ -12,22 +15,37 @@
          - all
       register: tower_data
 
-    - name: debug
-      loop: "{{ tower_data.assets[0].asset_relation.group }}"
-      when: "'digital_ocean' in item.name"
-      debug:
-        msg: "{{ item.hosts}}"
+    - name: create students vms list
+      block:
+        - name: default dict
+          loop: "{{ range(1, students_count + 1, 1) | list }}"
+          set_fact:
+            students: "{{ students | default([]) + ['student0' + item|string] }}"
 
-    - name: set hosts to remove
+        - name: set
+          loop: "{{ students }}"
+          set_fact:
+            students_vms: "{{ students_vms | default([]) + [ item + '-vm1', item + '-vm2', item + '-vm3' ] }}"
+    
+    - name: find ip for vm
       loop: "{{ tower_data.assets[0].asset_relation.group }}"
-      when: "'digital_ocean' in item.name"
+      when: "item.name in students_vms"
       set_fact:
-        hosts_to_remove: "{{ item.hosts}}"
+        students_dict: "{{ students_dict | default([]) + [{ 'name': item.name, 'ip': item.hosts[0]}]}}"
 
-    - name: remove hosts from inventory
-      loop: "{{ hosts_to_remove }}"
-      tower_host:
-        name: "{{ item }}"
-        inventory: "Digital Ocean Inventory"
-        state: absent
+    - name: debug
+      debug:
+        msg: "{{ students_dict }}"
 
+    - name: create index.html
+      template:
+        src: templates/index.html.j2
+        dest: ansibe-vm-list/index.html
+
+    - name: build container
+      docker_image:
+        name: ansible-training-vm-list:latest
+        source: build
+        build:
+          path: ansibe-vm-list
+          pull: true
