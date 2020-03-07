@@ -1,5 +1,6 @@
 ---
 - name: create students vms
-  hosts: all
+  hosts: localhost
+  connection: local
   roles:
     - ansible-digitalocean-students
