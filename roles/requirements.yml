@@ -1,3 +1,7 @@
 - name: ansible-digitalocean-students
   src: https://github.com/shortmann/ansible-digitalocean-students.git
   version: v0.2.0
+
+- name: ansible-os-config-students
+  src: https://github.com/shortmann/ansible-os-config-students.git
+  version: v0.1.0

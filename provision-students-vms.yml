@@ -1,0 +1,5 @@
+---
+- name: create students vms
+  hosts: all
+  roles:
+    - ansible-os-config-students
