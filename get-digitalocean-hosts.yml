@@ -2,6 +2,10 @@
   hosts: localhost
   connection: local
   tasks:
+    - name: install dependencies
+      pip:
+        name: ansible-tower-cli
+
     - name: get data
       tower_receive:
         inventory:
