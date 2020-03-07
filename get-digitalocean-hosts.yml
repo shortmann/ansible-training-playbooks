@@ -1,0 +1,15 @@
+- name: get tower hosts
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: get data
+      tower_receive:
+        inventory:
+         - all
+      register: tower_data
+
+    - name: debug
+      loop: "{{ tower_data.assets[0].asset_relation.group }}"
+      when: "'digital_ocean' in item.name"
+      debug:
+        msg: "{{ item.hosts}}"
