@@ -17,3 +17,16 @@
       when: "'digital_ocean' in item.name"
       debug:
         msg: "{{ item.hosts}}"
+
+    - name: set hosts to remove
+      loop: "{{ tower_data.assets[0].asset_relation.group }}"
+      when: "'digital_ocean' in item.name"
+      set_fact:
+        hosts_to_remove: "{{ item.hosts}}"
+
+    - name: remove hosts from inventory
+      loop: "{{ hosts_to_remove }}"
+      tower_host:
+        name: "{{ item }}"
+        state: absent
+
