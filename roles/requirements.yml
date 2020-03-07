@@ -1,3 +1,2 @@
-roles:
-  - name: ansible-digitalocean-students
-    src: https://github.com/shortmann/ansible-digitalocean-students.git
+- name: ansible-digitalocean-students
+  src: https://github.com/shortmann/ansible-digitalocean-students.git
