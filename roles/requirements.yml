@@ -1,2 +1,3 @@
 - name: ansible-digitalocean-students
   src: https://github.com/shortmann/ansible-digitalocean-students.git
+  version: "v0.1.0"
