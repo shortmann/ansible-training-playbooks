@@ -28,5 +28,6 @@
       loop: "{{ hosts_to_remove }}"
       tower_host:
         name: "{{ item }}"
+        inventory: "Digital Ocean Inventory"
         state: absent
 
